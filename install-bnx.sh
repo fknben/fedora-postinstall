@@ -23,10 +23,10 @@ sudo dnf install -y \
   pipewire-pulseaudio wireplumber \
   xorg-x11-server-Xwayland \
   google-noto-fonts-common \
-  NetworkManager-wifi
+  NetworkManager-wifi \
+  plymouth plymouth-system-theme
 
 echo "=== 5. Installation de l'environnement, utilitaires et jeux ==="
-# DNF gérera automatiquement les conflits libcurl/ffmpeg grâce à --allowerasing
 sudo dnf install -y --allowerasing \
   ffmpeg \
   mesa-va-drivers-freeworld \
@@ -40,5 +40,11 @@ sudo dnf install -y --allowerasing \
 echo "=== 6. Configuration des services et de l'utilisateur ==="
 sudo systemctl enable sddm.service
 sudo chsh -s /usr/bin/fish $USER
+
+echo "=== 7. Configuration de l'écran de démarrage (Plymouth) ==="
+# On définit le thème par défaut de Fedora (spinner) et on reconstruit l'initramfs (-R)
+sudo plymouth-set-default-theme -R spinner
+# On modifie les paramètres du noyau pour activer l'écran graphique silencieux
+sudo grubby --update-kernel=ALL --args="rhgb quiet"
 
 echo "=== Installation terminée ! ==="
